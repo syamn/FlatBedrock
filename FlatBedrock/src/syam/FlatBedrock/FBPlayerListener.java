@@ -69,7 +69,7 @@ public class FBPlayerListener implements Listener{
 						// 上部分
 						// Y=127 岩盤でなければ岩盤に変換
 						if (world.getBlockAt(i, 127, j).getTypeId() != 7) world.getBlockAt(i, 127, j).setTypeId(7);
-						// Y=1～4 岩盤があればネザーラックに変換
+						// Y=126～123 岩盤があればネザーラックに変換
 						if (world.getBlockAt(i, 126, j).getTypeId() == 7) world.getBlockAt(i, 126, j).setTypeId(87);
 						if (world.getBlockAt(i, 125, j).getTypeId() == 7) world.getBlockAt(i, 125, j).setTypeId(87);
 						if (world.getBlockAt(i, 124, j).getTypeId() == 7) world.getBlockAt(i, 124, j).setTypeId(87);

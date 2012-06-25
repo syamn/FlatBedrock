@@ -37,8 +37,11 @@ public class FlatBedrock extends JavaPlugin {
 			ex.printStackTrace();
 		}
 
-		// Listener
+		// Regist Listener
 		pm.registerEvents(playerListener, this);
+
+		// Regist Commands
+		getServer().getPluginCommand("flatbedrock").setExecutor(new FBCommand(this));
 
 		// メッセージ表示
 		PluginDescriptionFile pdfFile = this.getDescription();

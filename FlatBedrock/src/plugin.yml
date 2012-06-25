@@ -6,7 +6,15 @@ description: FlatBedrock
 website: http://sakura-server.net/
 ##  Original Author     ##
 author: syam
+commands:
+    flatbedrock:
+      usage: /flatbedrock - to see the help
+      aliases: [flatbed, fbr]
+      description: To see the FlatBedrock help.
 permissions:
-    flatbedrock.auto:
+    flatbedrock.reload:
         default: op
+        description: Allow reload configuration!
+    flatbedrock.auto:
+        default: false
         description: Auto flat bedrock on player move!
