@@ -17,4 +17,4 @@ permissions:
         description: Allow reload configuration!
     flatbedrock.auto:
         default: false
-        description: Auto flat bedrock on player move!
+        description: Auto bedrock flat on player move!
