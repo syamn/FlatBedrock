@@ -8,5 +8,5 @@ website: http://sakura-server.net/
 author: syam
 permissions:
     flatbedrock.auto:
-        default: false
+        default: op
         description: Auto flat bedrock on player move!

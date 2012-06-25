@@ -46,12 +46,34 @@ public class FBPlayerListener implements Listener{
 					for (int j = z - checkRadius; j < z + checkRadius; j++){
 						// Y=0 岩盤でなければ岩盤に変換
 						if (world.getBlockAt(i, 0, j).getTypeId() != 7) world.getBlockAt(i, 0, j).setTypeId(7);
-
 						// Y=1～4 岩盤があれば石に変換
 						if (world.getBlockAt(i, 1, j).getTypeId() == 7) world.getBlockAt(i, 1, j).setTypeId(1);
 						if (world.getBlockAt(i, 2, j).getTypeId() == 7) world.getBlockAt(i, 2, j).setTypeId(1);
 						if (world.getBlockAt(i, 3, j).getTypeId() == 7) world.getBlockAt(i, 3, j).setTypeId(1);
 						if (world.getBlockAt(i, 4, j).getTypeId() == 7) world.getBlockAt(i, 4, j).setTypeId(1);
+					}
+				}
+			} // ネザーワールド
+			else if (world.getEnvironment() == Environment.NETHER) {
+				// 1列ずつ半径内を走査
+				for (int i = x - checkRadius; i < x + checkRadius; i++){
+					for (int j = z - checkRadius; j < z + checkRadius; j++){
+						// Y=0 岩盤でなければ岩盤に変換
+						if (world.getBlockAt(i, 0, j).getTypeId() != 7) world.getBlockAt(i, 0, j).setTypeId(7);
+						// Y=1～4 岩盤があればネザーラックに変換
+						if (world.getBlockAt(i, 1, j).getTypeId() == 7) world.getBlockAt(i, 1, j).setTypeId(87);
+						if (world.getBlockAt(i, 2, j).getTypeId() == 7) world.getBlockAt(i, 2, j).setTypeId(87);
+						if (world.getBlockAt(i, 3, j).getTypeId() == 7) world.getBlockAt(i, 3, j).setTypeId(87);
+						if (world.getBlockAt(i, 4, j).getTypeId() == 7) world.getBlockAt(i, 4, j).setTypeId(87);
+
+						// 上部分
+						// Y=127 岩盤でなければ岩盤に変換
+						if (world.getBlockAt(i, 127, j).getTypeId() != 7) world.getBlockAt(i, 127, j).setTypeId(7);
+						// Y=1～4 岩盤があればネザーラックに変換
+						if (world.getBlockAt(i, 126, j).getTypeId() == 7) world.getBlockAt(i, 126, j).setTypeId(87);
+						if (world.getBlockAt(i, 125, j).getTypeId() == 7) world.getBlockAt(i, 125, j).setTypeId(87);
+						if (world.getBlockAt(i, 124, j).getTypeId() == 7) world.getBlockAt(i, 124, j).setTypeId(87);
+						if (world.getBlockAt(i, 123, j).getTypeId() == 7) world.getBlockAt(i, 123, j).setTypeId(87);
 					}
 				}
 			}
