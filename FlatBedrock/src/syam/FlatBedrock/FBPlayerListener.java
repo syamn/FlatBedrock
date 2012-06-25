@@ -1,4 +1,4 @@
-package FlatBedrock;
+package syam.FlatBedrock;
 
 import java.util.logging.Logger;
 

@@ -1,4 +1,4 @@
-package FlatBedrock;
+package syam.FlatBedrock;
 
 import java.io.DataInputStream;
 import java.io.File;
