@@ -1,0 +1,12 @@
+##  Plugin Information  ##
+name: FlatBedrock
+version: 0.1
+main: syam.FlatBedrock.FlatBedrock
+description: FlatBedrock
+website: http://sakura-server.net/
+##  Original Author     ##
+author: syam
+permissions:
+    flatbedrock.auto:
+        default: false
+        description: Auto flat bedrock on player move!

@@ -1,0 +1,12 @@
+# FlatBedrock Configuration file for version 1.00
+# @author syamn <admin@sakura-server.net>
+# github: https://github.com/syamn/StopKorean
+
+#==================#
+#   Basic Config   #
+#==================#
+# Default radius to check at a time (default: 8)
+Radius: 8
+
+# Maximum radius to check at a time (default: 250)
+MaxRadius: 250
