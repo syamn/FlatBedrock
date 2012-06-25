@@ -64,7 +64,7 @@ public class FBCommand implements CommandExecutor {
 				}
 			}catch (NumberFormatException ex){
 				// 引数が整数ではない
-				Actions.message(null, player, "&c'"+args[0]+"'is not a number!");
+				Actions.message(null, player, msgPrefix+"&c'"+args[0]+"' is not a number!");
 				return true;
 			}
 
@@ -73,13 +73,25 @@ public class FBCommand implements CommandExecutor {
 			int x = player.getLocation().getBlockX();
 			int z = player.getLocation().getBlockZ();
 
+			// 処理開始通知
+			Actions.message(null, player, "&7Flatting bedrock in radius: " + radius + "..");
+
 			// ノーマルワールド
 			if (world.getEnvironment() == Environment.NORMAL){
 				// 1列ずつ半径内を走査
 				for (int i = x - radius; i < x + radius; i++){
 					for (int j = z - radius; j < z + radius; j++){
 						// チャンクチェック チャンクが読み込まれていなければスキップする
-						if (world.isChunkLoaded(i, j)){
+
+						/*
+						 * 覚え書き: 12/06/26現在、
+						 * world.isChunkLoaded(x, z) は正常に動作しない (ほとんどの場所でfalseが返される)
+						 * world.isChunkLoaded(world.getChunkAt(x, z)) は非常に時間がかかる
+						 * (どうやら world.getChunkAt(x, z) の処理が非常に重いみたい)
+						 * このことから、チャンクを読み込む時は
+						 * world.getChunkAt(world.getBlockAt(x, 0, z)) でブロックデータを取り、それを引数に渡す
+						 */
+						if (world.isChunkLoaded(world.getChunkAt(world.getBlockAt(i, 0, j)))){
 							// Y=0 岩盤でなければ岩盤に変換
 							if (world.getBlockAt(i, 0, j).getTypeId() != 7) world.getBlockAt(i, 0, j).setTypeId(7);
 							// Y=1～4 岩盤があれば石に変換
@@ -96,7 +108,7 @@ public class FBCommand implements CommandExecutor {
 				for (int i = x - radius; i < x + radius; i++){
 					for (int j = z - radius; j < z + radius; j++){
 						// チャンクチェック チャンクが読み込まれていなければスキップする
-						if (world.isChunkLoaded(i, j)){
+						if (world.isChunkLoaded(world.getChunkAt(world.getBlockAt(i, 0, j)))){
 							// Y=0 岩盤でなければ岩盤に変換
 							if (world.getBlockAt(i, 0, j).getTypeId() != 7) world.getBlockAt(i, 0, j).setTypeId(7);
 							// Y=1～4 岩盤があればネザーラックに変換
@@ -123,10 +135,20 @@ public class FBCommand implements CommandExecutor {
 			}
 
 			// 完了通知
-			Actions.message(null, player, "&aFlattened bedrock in radius: " + radius);
+			Actions.message(null, player, "&aFlattened bedrock in radius: " + radius + "!");
 			return true;
 		}
 
-		return false;
+		// コマンドヘルプを表示
+		Actions.message(sender, null, "&c===================================");
+		Actions.message(sender, null, "&bFlatBedrock Plugin version &3%version &bby syamn");
+		Actions.message(sender, null, " &b<>&f = Required, &b[]&f = optional");
+		Actions.message(sender, null, " /flatbedrock <radius> (/fbr <radius>)&7 :");
+		Actions.message(sender, null, "   &7- Flattens bedrock in specified radius");
+		Actions.message(sender, null, " /flatbedrock reload (/fbr r)&7 :");
+		Actions.message(sender, null, "   &7- Reload configs from config.yml");
+		Actions.message(sender, null, "&c===================================");
+
+		return true;
 	}
 }

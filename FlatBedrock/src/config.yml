@@ -9,4 +9,6 @@
 Radius: 8
 
 # Maximum radius to check at a time (default: 250)
+# The server may freeze when you increase this value.
+# It's RECOMMENDED that you do NOT to a value greater than default.
 MaxRadius: 250

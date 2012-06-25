@@ -1,6 +1,6 @@
 ##  Plugin Information  ##
 name: FlatBedrock
-version: 0.1
+version: 1.0
 main: syam.FlatBedrock.FlatBedrock
 description: FlatBedrock
 website: http://sakura-server.net/
@@ -15,6 +15,9 @@ permissions:
     flatbedrock.reload:
         default: op
         description: Allow reload configuration!
+    flatbedrock.use:
+        default: op
+        description: Flattens bedrock in specified radius
     flatbedrock.auto:
         default: false
         description: Auto bedrock flat on player move!

@@ -10,7 +10,7 @@ public class FlatBedrock extends JavaPlugin {
 	// Logger
 	public final static Logger log = Logger.getLogger("Minecraft");
 	public final static String logPrefix = "[FlatBedrock] ";
-	public final static String msgPrefix = "&c[FlatBedrock] &f";
+	public final static String msgPrefix = "&6[FlatBedrock] &f";
 
 	// Private classes
 	private ConfigurationManager config;
