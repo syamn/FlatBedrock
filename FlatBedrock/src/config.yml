@@ -12,3 +12,10 @@ Radius: 8
 # The server may freeze when you increase this value.
 # It's RECOMMENDED that you do NOT to a value greater than default.
 MaxRadius: 250
+
+#==================#
+#   Vault Config   #
+#==================#
+UseVault: true
+PayCost: 300
+PayRadius: 10

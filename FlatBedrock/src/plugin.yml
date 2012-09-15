@@ -4,6 +4,7 @@ version: 1.0
 main: syam.FlatBedrock.FlatBedrock
 description: FlatBedrock
 website: http://sakura-server.net/
+softdepend: [Vault]
 ##  Original Author     ##
 author: syam
 commands:
@@ -21,3 +22,6 @@ permissions:
     flatbedrock.auto:
         default: false
         description: Auto bedrock flat on player move!
+    flatbedrock.pay:
+        default: op
+        description: Flattens bedrock and needs pay cost

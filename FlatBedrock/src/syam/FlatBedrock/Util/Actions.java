@@ -1,4 +1,4 @@
-package syam.FlatBedrock;
+package syam.FlatBedrock.Util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -7,12 +7,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import syam.FlatBedrock.FlatBedrock;
 
 public class Actions {
 	// Logger
@@ -95,6 +99,69 @@ public class Actions {
 		}
 
 		log.info("Received "+i+"players: "+message);
+	}
+
+	/****************************************/
+	// 所持金操作系関数 - Vault
+	/****************************************/
+	/**
+	 * 指定したユーザーにお金を加える
+	 * @param name ユーザー名
+	 * @param amount 金額
+	 * @return 成功ならtrue、失敗ならfalse
+	 */
+	public static boolean addMoney(String name, double amount){
+		if (amount < 0) return false; // 負数は許容しない
+		EconomyResponse r = FlatBedrock.economy.depositPlayer(name, amount);
+		if(r.transactionSuccess()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	/**
+	 * 指定したユーザーからお金を引く
+	 * @param name ユーザー名
+	 * @param amount 金額
+	 * @return 成功ならtrue、失敗ならfalse
+	 */
+	public static boolean takeMoney(String name, double amount){
+		if (amount < 0) return false; // 負数は許容しない
+		EconomyResponse r = FlatBedrock.economy.withdrawPlayer(name, amount);
+		if(r.transactionSuccess()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	/**
+	 * 指定したユーザーがお金を持っているか
+	 * @param name ユーザー名
+	 * @param amount 金額
+	 * @return 持っていればtrue、無ければfalse
+	 */
+	public static boolean checkMoney(String name, double amount){
+		return (FlatBedrock.economy.has(name, amount));
+	}
+	/**
+	 * 指定した金額での適切な通貨単位を返す
+	 * @param amount 金額
+	 * @return 通貨単位
+	 */
+	public static String getCurrencyName(double amount){
+	    if (amount <= 1.0D){
+	        return FlatBedrock.economy.currencyNameSingular();
+	    }else{
+	        return FlatBedrock.economy.currencyNamePlural();
+	    }
+	}
+	/**
+	 * 指定した金額での適切な単位を含めた文字列を返す
+	 * @param amount 金額
+	 * @return 文字列
+	 */
+	public static String getCurrencyString(double amount){
+	    return FlatBedrock.economy.format(amount);
 	}
 
 	/****************************************/

@@ -30,6 +30,11 @@ public class ConfigurationManager {
 	public int checkRadius = new Integer(8);
 	public int maxRadius = new Integer(250);
 
+	/*Vault Configs */
+	public boolean useVault = new Boolean(false);
+	public double payCost = new Double(500.0D);
+	public int payRadius = new Integer(10);
+
 	// 設定ここまで
 
 	/**
@@ -71,6 +76,18 @@ public class ConfigurationManager {
 		/* Basic Configs */
 		checkRadius = plugin.getConfig().getInt("Radius", 8);
 		maxRadius = plugin.getConfig().getInt("MaxRadius", 250);
+
+		/* Vault Configs */
+		useVault = plugin.getConfig().getBoolean("UseVault", false);
+		if (useVault){
+			payCost = plugin.getConfig().getDouble("PayCost", 500.0D);
+			payRadius = maxRadius = plugin.getConfig().getInt("PayRadius", 10);
+		}
+
+		// check Vault
+		if (!initialLoad && useVault && (plugin.vault == null || plugin.economy == null)){
+		    plugin.setupVault();
+		}
 	}
 
 	/**

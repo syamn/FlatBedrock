@@ -9,6 +9,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import syam.FlatBedrock.Util.Actions;
+
 public class FBCommand implements CommandExecutor {
 	public final static Logger log = FlatBedrock.log;
 	private final static String logPrefix = FlatBedrock.logPrefix;
@@ -22,7 +24,7 @@ public class FBCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args){
 		// 設定ファイル再読み込み
-		if (args.length >= 1 && (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("r"))){
+		if (args.length >= 1 && (args[0].equalsIgnoreCase("reload") || args[0].startsWith("r"))){
 			if (!sender.hasPermission("flatbedrock.reload")){
 				Actions.message(sender, null, "&cYou don't have permission to use this!");
 				return true;
@@ -35,6 +37,46 @@ public class FBCommand implements CommandExecutor {
 				return true;
 			}
 			Actions.message(sender, null, "&aConfiguration reloaded!");
+			return true;
+		}
+
+		// pay コマンド
+		if (args.length >= 1 && (args[0].equals("pay") || args[0].startsWith("p"))){
+			if (!(sender instanceof Player)) {
+				Actions.message(sender, null, "&cThis command cannot be run from the console!");
+				return true;
+			}
+			Player player = (Player)sender;
+			if (!sender.hasPermission("flatbedrock.pay")){
+				Actions.message(sender, null, "&cYou don't have permission to use this!");
+				return true;
+			}
+
+			if (!plugin.getConfigs().useVault){
+				Actions.message(sender, null, "&cSorry, this command not available now!");
+				return true;
+			}
+
+			// Pay cost
+			boolean paid = false;
+			double cost = plugin.getConfigs().payCost;
+
+			if (cost > 0 ){
+				paid = Actions.takeMoney(player.getName(), cost);
+				if (!paid){
+					Actions.message(null, player, "&cお金が足りません！ " + Actions.getCurrencyString(cost) + "必要です！");
+					return true;
+				}
+			}
+
+			int radius = plugin.getConfigs().payRadius;
+
+			FBActions.flatBedrock(player, radius);
+
+			String msg = "&a周囲、半径" + radius + "ブロックの岩盤を整地しました！";
+			if (paid) msg = msg + " &c(-" + Actions.getCurrencyString(cost) + ")";
+			Actions.message(null, player, msg);
+
 			return true;
 		}
 
@@ -68,71 +110,10 @@ public class FBCommand implements CommandExecutor {
 				return true;
 			}
 
-			// player locations
-			World world = player.getWorld();
-			int x = player.getLocation().getBlockX();
-			int z = player.getLocation().getBlockZ();
-
 			// 処理開始通知
 			Actions.message(null, player, "&7Flatting bedrock in radius: " + radius + "..");
 
-			// ノーマルワールド
-			if (world.getEnvironment() == Environment.NORMAL){
-				// 1列ずつ半径内を走査
-				for (int i = x - radius; i < x + radius; i++){
-					for (int j = z - radius; j < z + radius; j++){
-						// チャンクチェック チャンクが読み込まれていなければスキップする
-
-						/*
-						 * 覚え書き: 12/06/26現在、
-						 * world.isChunkLoaded(x, z) は正常に動作しない (ほとんどの場所でfalseが返される)
-						 * world.isChunkLoaded(world.getChunkAt(x, z)) は非常に時間がかかる
-						 * (どうやら world.getChunkAt(x, z) の処理が非常に重いみたい)
-						 * このことから、チャンクを読み込む時は
-						 * world.getChunkAt(world.getBlockAt(x, 0, z)) でブロックデータを取り、それを引数に渡す
-						 */
-						if (world.isChunkLoaded(world.getChunkAt(world.getBlockAt(i, 0, j)))){
-							// Y=0 岩盤でなければ岩盤に変換
-							if (world.getBlockAt(i, 0, j).getTypeId() != 7) world.getBlockAt(i, 0, j).setTypeId(7);
-							// Y=1～4 岩盤があれば石に変換
-							if (world.getBlockAt(i, 1, j).getTypeId() == 7) world.getBlockAt(i, 1, j).setTypeId(1);
-							if (world.getBlockAt(i, 2, j).getTypeId() == 7) world.getBlockAt(i, 2, j).setTypeId(1);
-							if (world.getBlockAt(i, 3, j).getTypeId() == 7) world.getBlockAt(i, 3, j).setTypeId(1);
-							if (world.getBlockAt(i, 4, j).getTypeId() == 7) world.getBlockAt(i, 4, j).setTypeId(1);
-						} // else { Actions.message(null, player, "check skipped x=" + i + ", z=" + j);}
-					}
-				}
-			} // ネザーワールド
-			else if(world.getEnvironment() == Environment.NETHER){
-				// 1列ずつ半径内を走査
-				for (int i = x - radius; i < x + radius; i++){
-					for (int j = z - radius; j < z + radius; j++){
-						// チャンクチェック チャンクが読み込まれていなければスキップする
-						if (world.isChunkLoaded(world.getChunkAt(world.getBlockAt(i, 0, j)))){
-							// Y=0 岩盤でなければ岩盤に変換
-							if (world.getBlockAt(i, 0, j).getTypeId() != 7) world.getBlockAt(i, 0, j).setTypeId(7);
-							// Y=1～4 岩盤があればネザーラックに変換
-							if (world.getBlockAt(i, 1, j).getTypeId() == 7) world.getBlockAt(i, 1, j).setTypeId(87);
-							if (world.getBlockAt(i, 2, j).getTypeId() == 7) world.getBlockAt(i, 2, j).setTypeId(87);
-							if (world.getBlockAt(i, 3, j).getTypeId() == 7) world.getBlockAt(i, 3, j).setTypeId(87);
-							if (world.getBlockAt(i, 4, j).getTypeId() == 7) world.getBlockAt(i, 4, j).setTypeId(87);
-
-							// 上部分
-							// Y=127 岩盤でなければ岩盤に変換
-							if (world.getBlockAt(i, 127, j).getTypeId() != 7) world.getBlockAt(i, 127, j).setTypeId(7);
-							// Y=126～123 岩盤があればネザーラックに変換
-							if (world.getBlockAt(i, 126, j).getTypeId() == 7) world.getBlockAt(i, 126, j).setTypeId(87);
-							if (world.getBlockAt(i, 125, j).getTypeId() == 7) world.getBlockAt(i, 125, j).setTypeId(87);
-							if (world.getBlockAt(i, 124, j).getTypeId() == 7) world.getBlockAt(i, 124, j).setTypeId(87);
-							if (world.getBlockAt(i, 123, j).getTypeId() == 7) world.getBlockAt(i, 123, j).setTypeId(87);
-						}
-					}
-				}
-			} //その他のワールド サポートしていない
-			else{
-				Actions.message(null, player, "&cThis Environment is not supported yet!");
-				return true;
-			}
+			FBActions.flatBedrock(player, radius);
 
 			// 完了通知
 			Actions.message(null, player, "&aFlattened bedrock in radius: " + radius + "!");
@@ -143,6 +124,8 @@ public class FBCommand implements CommandExecutor {
 		Actions.message(sender, null, "&c===================================");
 		Actions.message(sender, null, "&bFlatBedrock Plugin version &3%version &bby syamn");
 		Actions.message(sender, null, " &b<>&f = Required, &b[]&f = optional");
+		Actions.message(sender, null, " /flatbedrock pay (/fbr p)&7 :");
+		Actions.message(sender, null, "   &7- Pay cost and flattens bedrock");
 		Actions.message(sender, null, " /flatbedrock <radius> (/fbr <radius>)&7 :");
 		Actions.message(sender, null, "   &7- Flattens bedrock in specified radius");
 		Actions.message(sender, null, " /flatbedrock reload (/fbr r)&7 :");
